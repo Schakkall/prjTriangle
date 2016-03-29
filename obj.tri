@@ -2,7 +2,7 @@ let
   var  P1 : Boolean
 in  
 begin
-     P1 := true -> false <-> P1;
-	 true and P1 and false
+     P1 := false;
+	 true and P1
 	 !P1 and false
 end  

@@ -121,12 +121,14 @@ public class Compiler {
      * @param	args	the only command-line argument to the program specifies
      *                  the source filename.
      */
+    
+    
     @SuppressWarnings("unused")
     public static void main(String[] args) {
         boolean compiledOK;
 
         if (args.length != 1) {
-            System.out.println("Usage: tc filename");
+            System.out.println("Uso: Nome do arquivo a ser compilado");
             System.exit(1);
         }
         

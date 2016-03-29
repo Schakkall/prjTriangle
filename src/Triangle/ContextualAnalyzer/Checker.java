@@ -110,9 +110,12 @@ public final class Checker implements Visitor {
   public Object visitExpressionCommand(ExpressionCommand ast, Object o) {
 	//TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
 	//this.visitBinaryExpression((BinaryExpression)ast.E, o);
+	TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
+    if (! eType.equals(StdEnvironment.booleanType))
+      reporter.reportError("Boolean expression expected here", "", ast.E.position);
+	  
 	
-	
-	if (ast.E instanceof BinaryExpression) {
+    if (ast.E instanceof BinaryExpression) {
 		BinaryExpression binExpr = (BinaryExpression) ast.E;
 		this.visitBinaryExpression(binExpr, o);
 	} else 
@@ -120,8 +123,6 @@ public final class Checker implements Visitor {
 		UnaryExpression unaExpr = (UnaryExpression) ast.E;
 		this.visitUnaryExpression(unaExpr, o);
 	}			
-	
-	
 	
   	return null;
   }

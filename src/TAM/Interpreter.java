@@ -19,10 +19,27 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import Triangle.ErrorReporter;
+import Triangle.AbstractSyntaxTrees.Program;
+import Triangle.CodeGenerator.Encoder;
+import Triangle.ContextualAnalyzer.Checker;
+import Triangle.SyntacticAnalyzer.Parser;
+import Triangle.SyntacticAnalyzer.Scanner;
+import Triangle.SyntacticAnalyzer.SourceFile;
+
 public class Interpreter {
 
 
   static String objectName;
+  static String sourceName;
+  
+  private static ErrorReporter reporter;
+  private static Scanner scanner;
+  private static Parser parser;
+  private static Checker checker;
+  private static Encoder encoder;
+  
+  private static Program theAST; 
 
 
 // DATA STORE
@@ -611,23 +628,49 @@ public class Interpreter {
     }
   }
 
-
 // RUNNING
 
   public static void main(String[] args) {
     System.out.println("********** TAM Interpreter (Java Version 2.1) **********");
 
     if (args.length == 1)
-      objectName = args[0];
+      sourceName = args[0];
   	else
-      objectName = "obj.tam";
+      sourceName = "obj.tri";
+    
+    
+    objectName = "obj.tam";
+    
+    SourceFile source = new SourceFile(sourceName);
 
-    //objectName = "F:\\WorkSpace\\prjTriangle\\obj.tam";
+    scanner  = new Scanner(source);
+    parser   = new Parser(scanner, reporter);
+    reporter = new ErrorReporter();
+    checker  = new Checker(reporter);
+    encoder  = new Encoder(reporter);
+    
+    theAST = parser.parseProgram();
+    if (reporter.isAllOk()) {
+       
+      checker.check(theAST);
+    
+      if (reporter.isAllOk()) {
+    	    
+    	encoder.encodeRun(theAST, false);
+    	 
+    	if (reporter.isAllOk()) {
+    	
+    	   encoder.saveObjectProgram(objectName);	
+    	}   
+      }
+    }
+    
     
     loadObjectProgram(objectName);
     if (CT != CB) {
       interpretProgram();
       showStatus();
     }
+    
   }
 }

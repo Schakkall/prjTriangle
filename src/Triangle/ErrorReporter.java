@@ -20,7 +20,15 @@ public class ErrorReporter {
 
   int numErrors;
 
-  ErrorReporter() {
+  public int getNumErrors() {
+	return numErrors;
+  }
+
+  public boolean isAllOk(){
+	  return numErrors == 0;
+  }  
+
+  public ErrorReporter() {
     numErrors = 0;
   }
 
@@ -39,4 +47,5 @@ public class ErrorReporter {
   public void reportRestriction(String message) {
     System.out.println("RESTRICTION: " + message);
   }
+  
 }
