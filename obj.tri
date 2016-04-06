@@ -1,8 +1,8 @@
 let
-  var  P1 : Boolean
+  var P2 : Boolean
 in  
 begin
-     P1 := false;
+     P1 := false and true;
+     P1 := true;
 	 true and P1
-	 !P1 and false
 end  

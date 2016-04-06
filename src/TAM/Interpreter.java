@@ -660,7 +660,8 @@ public class Interpreter {
     	 
     	if (reporter.isAllOk()) {
     	
-    	   encoder.saveObjectProgram(objectName);	
+    	   encoder.saveObjectProgram(objectName);
+    	   
     	}   
       }
     }

@@ -19,6 +19,7 @@ import Triangle.StdEnvironment;
 import Triangle.AbstractSyntaxTrees.AnyTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ArrayExpression;
 import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
+import Triangle.AbstractSyntaxTrees.AssignAndDeclarationCommand;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
@@ -106,6 +107,16 @@ public final class Checker implements Visitor {
       reporter.reportError ("assignment incompatibilty", "", ast.position);
     return null;
   }
+  
+  
+  public Object visitAssignAndDeclarationCommand(AssignAndDeclarationCommand ast, Object o) {
+	  
+	visitVarDeclaration(ast.D, o);
+	visitAssignCommand(ast, o);  
+	  
+    return null;            
+  }
+  
 
   public Object visitExpressionCommand(ExpressionCommand ast, Object o) {
 	//TypeDenoter eType = (TypeDenoter) ast.E.visit(this, null);
@@ -967,9 +978,9 @@ public final class Checker implements Visitor {
     StdEnvironment.putDecl = declareStdProc("put", new SingleFormalParameterSequence(
                                       new ConstFormalParameter(dummyI, StdEnvironment.charType, dummyPos), dummyPos));
     StdEnvironment.getintDecl = declareStdProc("getint", new SingleFormalParameterSequence(
-                                            new VarFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
+                                      new VarFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
     StdEnvironment.putintDecl = declareStdProc("putint", new SingleFormalParameterSequence(
-                                            new ConstFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
+                                      new ConstFormalParameter(dummyI, StdEnvironment.integerType, dummyPos), dummyPos));
     StdEnvironment.geteolDecl = declareStdProc("geteol", new EmptyFormalParameterSequence(dummyPos));
     StdEnvironment.puteolDecl = declareStdProc("puteol", new EmptyFormalParameterSequence(dummyPos));
     StdEnvironment.equalDecl = declareStdBinaryOp("=", StdEnvironment.anyType, StdEnvironment.anyType, StdEnvironment.booleanType);

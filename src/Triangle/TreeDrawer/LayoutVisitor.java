@@ -21,6 +21,7 @@ import Triangle.AbstractSyntaxTrees.AST;
 import Triangle.AbstractSyntaxTrees.AnyTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ArrayExpression;
 import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
+import Triangle.AbstractSyntaxTrees.AssignAndDeclarationCommand;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.BinaryOperatorDeclaration;
@@ -100,9 +101,15 @@ public class LayoutVisitor implements Visitor {
   public Object visitAssignCommand(AssignCommand ast, Object obj) {
     return layoutBinary("AssignCom.", ast.V, ast.E);
   }
+
+
+    
+  public Object visitAssignAndDeclarationCommand(AssignAndDeclarationCommand ast, Object o) {
+	return layoutTernary("AssignDeclCom.", ast.V, ast.E, ast.D);
+  }  
   
-  public Object visitExpressionCommand(ExpressionCommand ast, Object obj) {
-	
+  
+  public Object visitExpressionCommand(ExpressionCommand ast, Object obj) {	
 	if (ast.E instanceof BinaryExpression) {
 		BinaryExpression binExpr = (BinaryExpression) ast.E;
 		return layoutUnary("ExpressionCom.", binExpr);
@@ -112,7 +119,6 @@ public class LayoutVisitor implements Visitor {
 		return layoutUnary("ExpressionCom.", unaExpr);
 	}			
 	return null;
-	
   }
   
 
@@ -571,5 +577,7 @@ public class LayoutVisitor implements Visitor {
 
     return r;
   }
+
+	
 
 }

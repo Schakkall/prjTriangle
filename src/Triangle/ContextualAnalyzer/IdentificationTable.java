@@ -66,15 +66,17 @@ public final class IdentificationTable {
       if (entry == null || entry.level < this.level)
         searching = false;
       else if (entry.id.equals(id)) {
+    	//entry.attr = attr;
         present = true;
         searching = false;
        } else
        entry = entry.previous;
     }
 
-    attr.duplicated = present;
+    //attr.duplicated = present;
     // Add new entry ...
     entry = new IdEntry(id, attr, this.level, this.latest);
+    entry.attr = attr;
     this.latest = entry;
   }
 

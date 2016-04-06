@@ -20,8 +20,10 @@ import Triangle.AbstractSyntaxTrees.ActualParameterSequence;
 import Triangle.AbstractSyntaxTrees.ArrayAggregate;
 import Triangle.AbstractSyntaxTrees.ArrayExpression;
 import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
+import Triangle.AbstractSyntaxTrees.AssignAndDeclarationCommand;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
+import Triangle.AbstractSyntaxTrees.BoolTypeDenoter;
 import Triangle.AbstractSyntaxTrees.Boolean;
 import Triangle.AbstractSyntaxTrees.BooleanExpression;
 import Triangle.AbstractSyntaxTrees.CallCommand;
@@ -320,33 +322,18 @@ public class Parser {
           accept(Token.BECOMES);
           Expression eAST = parseExpression();
           finish(commandPos);
-          commandAST = new AssignCommand(vAST, eAST, commandPos);
+          VarDeclaration dAST = new VarDeclaration(iAST, new BoolTypeDenoter(commandPos), commandPos); 
+          commandAST = new AssignAndDeclarationCommand(vAST, eAST, dAST, commandPos);
           
         } else {
         	
-        	///* Expression Command
-        	
-            Expression expressionAST = parseExpression(); // in case there's a syntactic error
-            
-            /*
-            SourcePosition expressionPos = new SourcePosition();
-            start(expressionPos);
-            
-            expressionAST = parsePrimaryExpression();
-            
-            while (currentToken.kind == Token.OPERATOR) {
-                Operator opAST = parseOperator();
-                Expression e2AST = parsePrimaryExpression();
-                expressionAST = new BinaryExpression(expressionAST, opAST, e2AST, expressionPos);
-            }
-            */
-            
-            if (expressionAST != null)
+            Expression expressionAST = parseExpression(); 
+                     
+            if (expressionAST != null)// in case there's a syntactic error
               commandAST = new ExpressionCommand(expressionAST,commandPos);
             
             finish(commandPos);
-            
-            //*/          
+                      
         	
         }
       }

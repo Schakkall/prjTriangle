@@ -245,7 +245,7 @@ public final class Scanner {
               return Token.BOOLEAN;
           }    
         }    
-      }
+      } 
       
     case 'f':
       takeIt();
@@ -261,7 +261,7 @@ public final class Scanner {
             }    
           }    
         }    
-      }
+      } 
        
     default:
       takeIt();

@@ -27,6 +27,7 @@ import Triangle.AbstractSyntaxTrees.AST;
 import Triangle.AbstractSyntaxTrees.AnyTypeDenoter;
 import Triangle.AbstractSyntaxTrees.ArrayExpression;
 import Triangle.AbstractSyntaxTrees.ArrayTypeDenoter;
+import Triangle.AbstractSyntaxTrees.AssignAndDeclarationCommand;
 import Triangle.AbstractSyntaxTrees.AssignCommand;
 import Triangle.AbstractSyntaxTrees.BinaryExpression;
 import Triangle.AbstractSyntaxTrees.Boolean;
@@ -112,36 +113,35 @@ public final class Encoder implements Visitor {
 
   public Object visitOperator(Operator ast, Object o) {
 
-		Frame frame = (Frame) o;
+	Frame frame = (Frame) o;
 
-	    if (ast.spelling.equals("not")) {
-	    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
-	    } else
-	    if (ast.spelling.equals("and")) {
-	    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.andDisplacement);
-	    } else
-	    if (ast.spelling.equals("or")) {
-	    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
-	    } else
-	    if (ast.spelling.equals("->")) {
-	    	//Implemented in visitBinaryExpression()
-	    } else
-	    if (ast.spelling.equals("<->")) {
-	    	//Implemented in visitBinaryExpression()
-	    };
-		    
-		    
-	    return null;
-	}  
+	if (ast.spelling.equals("not")) {
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
+	} else
+	if (ast.spelling.equals("and")) {
+	  emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.andDisplacement);
+	} else
+	if (ast.spelling.equals("or")) {
+	  emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
+	} else
+	if (ast.spelling.equals("->")) {
+	  //Implemented in visitBinaryExpression()
+	} else
+	if (ast.spelling.equals("<->")) {
+	  //Implemented in visitBinaryExpression()
+	};
+		    	    
+	return null;
+  }  
 
   public Object visitUnaryExpression(UnaryExpression ast, Object o) {
 	  
-	    Frame frame = (Frame) o;
+	Frame frame = (Frame) o;
 	    
-	    ast.E.visit(this, frame);
-	    ast.O.visit(this, frame);
-	    
-	    return 1;
+	ast.E.visit(this, frame);
+	ast.O.visit(this, frame);
+	   
+	return null;
   }
 
   
@@ -153,56 +153,57 @@ public final class Encoder implements Visitor {
 	//Implication implementation
     if (ast.O.spelling.equals("->")) {
     	
-        ast.E1.visit(this, frame);
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
-        ast.E2.visit(this, frame);
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
+      ast.E1.visit(this, frame);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
+      ast.E2.visit(this, frame);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
     	
     } else
     //Equivalence implementation
     if (ast.O.spelling.equals("<->")) {
      
-    	ast.E1.visit(this, frame);
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
-        ast.E2.visit(this, frame);
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
+      ast.E1.visit(this, frame);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
+      ast.E2.visit(this, frame);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
     	
-        ast.E2.visit(this, frame);
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
-        ast.E1.visit(this, frame);
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
+      ast.E2.visit(this, frame);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.notDisplacement);
+      ast.E1.visit(this, frame);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.orDisplacement);
     	
-    	emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.andDisplacement);
+      emit(Machine.CALLop, Machine.SBr, Machine.PBr, Machine.andDisplacement);
       	
     } else {
-    	//Default cases implementation
+      //Default cases implementation
     	
-    	ast.E1.visit(this, frame);
-    	ast.E2.visit(this, frame);
+      ast.E1.visit(this, frame);
+      ast.E2.visit(this, frame);
     	
-    	ast.O.visit(this, frame);
-    	
+      ast.O.visit(this, frame);
     }	
 
-    return 1;
+    return null;
   }
-	
+
+  public Object visitAssignAndDeclarationCommand(AssignAndDeclarationCommand ast, Object o) {	  
+	  
+	visitVarDeclaration(ast.D, o);
+	visitAssignCommand(ast, o);
+	return null;
+  }  
 	
   public Object visitBooleanExpression(BooleanExpression ast, Object o){
-    Frame frame = (Frame) o;
-    
-    //Integer valSize = (Integer) ast.type.visit(this, null);
         
     if (ast.BOL.spelling.equals("true"))
     	emit(Machine.LOADLop, 0, 0, 1);
     else
     	emit(Machine.LOADLop, 0, 0, 0);
     
-	return 1;
+	return null;
   }
   
   public Object visitExpressionCommand(ExpressionCommand ast, Object o) {
-	Frame frame = (Frame) o;
 	
 	if (ast.E instanceof BinaryExpression) {
 		BinaryExpression binExpr = (BinaryExpression) ast.E;
@@ -212,9 +213,7 @@ public final class Encoder implements Visitor {
 		UnaryExpression unaExpr = (UnaryExpression) ast.E;
 		this.visitUnaryExpression(unaExpr, o);
 	}			
-	//ast.E.visit(this, frame);
 	return null;
-	
   }
   
 	
@@ -971,7 +970,7 @@ public final class Encoder implements Visitor {
   // the constant or variable is fetched at run-time.
   // valSize is the size of the constant or variable's value.
 
-  private void encodeStore(Vname V, Frame frame, int valSize) {
+  public void encodeStore(Vname V, Frame frame, int valSize) {
 
     RuntimeEntity baseObject = (RuntimeEntity) V.visit(this, frame);
     // If indexed = true, code will have been generated to load an index value.

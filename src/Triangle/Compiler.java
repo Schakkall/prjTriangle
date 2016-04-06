@@ -92,12 +92,8 @@ public class Compiler {
         	
             System.out.println ("Contextual Analysis ...");
             
-            ///*
             checker.check(theAST);		// 2nd pass
-            if (showingAST) {
-                drawer.draw(theAST);
-            }
-            //*/
+
             if (reporter.numErrors == 0) {
                 System.out.println("Code Generation ...");
                 encoder.encodeRun(theAST, showingTable);	// 3rd pass
